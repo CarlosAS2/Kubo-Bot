@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubo Bot - Robô Mascote Virtual Kawaii</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Quicksand', 'Nunito', 'sans-serif'],
+                        heading: ['Nunito', 'Quicksand', 'sans-serif'],
+                    },
+                    colors: {
+                        pastel: {
+                            pink: '#FFD6E8',
+                            blue: '#D2E9E9',
+                            purple: '#E3DFFD',
+                            yellow: '#FFF3DA',
+                            mint: '#C1ECE4',
+                            lavender: '#E5D4FF',
+                            bg1: '#FFF5F7',
+                            bg2: '#F0F4FF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary: #FF94B9;
+            --primary-hover: #ff7aa7;
+            --primary-light: #FFE3EC;
+            --secondary: #A0C3FF;
+            --secondary-light: #E0ECFF;
+            --accent: #B282FF;
+            --bg-gradient-1: #FFF5F7;
+            --bg-gradient-2: #EEF4FF;
+            --bg-gradient-3: #F5E8FF;
+            --robot-main: #FFFFFF;
+            --robot-accent: #FFC0D9;
+            --robot-screen: #2C2C40;
+            --robot-eye-glow: #00F3FF;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 10px 30px -5px rgba(182, 160, 210, 0.2);
+            --night-overlay: rgba(30, 25, 50, 0.45);
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3));
+            background-size: 300% 300%;
+            animation: gradientShift 18s ease infinite;
+            color: #4A4A68;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .glass-btn:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px -5px rgba(255, 148, 185, 0.3);
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        .glass-btn:active:not(:disabled) {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* Keyframe Animations */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes robotFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(1deg); }
+        }
+
+        @keyframes robotSleepFloat {
+            0%, 100% { transform: translateY(0px) rotate(-1deg); }
+            50% { transform: translateY(-6px) rotate(1deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 12px rgba(255, 148, 185, 0.4)); }
+            50% { filter: drop-shadow(0 0 22px rgba(178, 130, 255, 0.6)); }
+        }
+
+        @keyframes eyeBlink {
+            0%, 94%, 98%, 100% { transform: scaleY(1); }
+            96% { transform: scaleY(0.1); }
+        }
+
+        @keyframes zzzFloat {
+            0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; transform: translate(25px, -50px) scale(1.2); }
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(0) translate(0, 0); opacity: 1; }
+            100% { transform: scale(1.4) translate(var(--tx, 0px), -60px); opacity: 0; }
+        }
+
+        @keyframes antennaPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; filter: drop-shadow(0 0 8px #FFD700); }
+        }
+
+        .robot-floating {
+            animation: robotFloat 4.5s ease-in-out infinite;
+        }
+
+        .robot-sleeping {
+            animation: robotSleepFloat 7s ease-in-out infinite;
+        }
+
+        .blink-animation {
+            transform-origin: center center;
+            animation: eyeBlink 4s infinite;
+        }
+
+        .antenna-glow {
+            transform-origin: center center;
+            animation: antennaPulse 2s ease-in-out infinite;
+        }
+
+        /* Floating background elements */
+        .bg-cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(4px);
+            border-radius: 999px;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatCloud linear infinite;
+        }
+
+        @keyframes floatCloud {
+            from { transform: translateX(-200px); }
+            to { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        /* Floating Zzz elements */
+        .zzz-particle {
+            position: absolute;
+            font-weight: bold;
+            color: #A0C3FF;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: zzzFloat 2.5s ease-out forwards;
+        }
+
+        /* Night mode tint */
+        #night-overlay-layer {
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 148, 185, 0.4);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 148, 185, 0.7);
+        }
+
+        /* Dynamic Theme Palette Styles */
+        .theme-pink {
+            --primary: #FF94B9;
+            --primary-hover: #ff7aa7;
+            --primary-light: #FFE3EC;
+            --secondary: #A0C3FF;
+            --accent: #B282FF;
+            --robot-accent: #FFC0D9;
+            --bg-gradient-1: #FFF5F7;
+            --bg-gradient-2: #F0F4FF;
+            --bg-gradient-3: #FDF0FF;
+        }
+
+        .theme-blue {
+            --primary: #70B2FF;
+            --primary-hover: #4d9dff;
+            --primary-light: #E2F0FF;
+            --secondary: #74EBD5;
+            --accent: #9B82FF;
+            --robot-accent: #B5D8FF;
+            --bg-gradient-1: #EFF7FF;
+            --bg-gradient-2: #E8F5FF;
+            --bg-gradient-3: #F0F0FF;
+        }
+
+        .theme-purple {
+            --primary: #B185FF;
+            --primary-hover: #9b66ff;
+            --primary-light: #F0E6FF;
+            --secondary: #FF94DB;
+            --accent: #70B2FF;
+            --robot-accent: #DFC8FF;
+            --bg-gradient-1: #F8F3FF;
+            --bg-gradient-2: #FFF0FB;
+            --bg-gradient-3: #F0F4FF;
+        }
+
+        .theme-mint {
+            --primary: #52D6B6;
+            --primary-hover: #3cc2a1;
+            --primary-light: #E0FBF4;
+            --secondary: #8BC6EC;
+            --accent: #95E1D3;
+            --robot-accent: #B8F3E5;
+            --bg-gradient-1: #F0FAF7;
+            --bg-gradient-2: #EBF8FF;
+            --bg-gradient-3: #F2FBF9;
+        }
+
+        .theme-yellow {
+            --primary: #FFB347;
+            --primary-hover: #ff9e19;
+            --primary-light: #FFF4E0;
+            --secondary: #FF80BF;
+            --accent: #70D6FF;
+            --robot-accent: #FFE2B3;
+            --bg-gradient-1: #FFFDF0;
+            --bg-gradient-2: #FFF5F7;
+            --bg-gradient-3: #FFF8EB;
+        }
+
+        /* Progress Bar transition */
+        .progress-bar-fill {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s ease;
+        }
+    </style>
+</head>
+<body class="theme-pink min-h-screen flex flex-col justify-between items-center relative overflow-x-hidden p-3 md:p-6">
+
+    <!-- Ambient Floating Clouds -->
+    <div class="bg-cloud w-32 h-10 top-12 left-0" style="animation-duration: 35s;"></div>
+    <div class="bg-cloud w-48 h-14 top-1/4 left-0" style="animation-duration: 48s; animation-delay: -12s;"></div>
+    <div class="bg-cloud w-40 h-12 top-2/3 left-0" style="animation-duration: 40s; animation-delay: -22s;"></div>
+
+    <!-- Night Overlay for Sleep Mode -->
+    <div id="night-overlay-layer" class="fixed inset-0 bg-slate-900/40 pointer-events-none z-10 opacity-0 backdrop-blur-[2px]"></div>
+
+    <!-- Top Header / Bar -->
+    <header class="w-full max-w-5xl z-20 flex justify-between items-center mb-4">
+        <div class="glass-panel rounded-2xl px-4 py-2.5 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center text-white shadow-md text-lg">
+                🤖
+            </div>
+            <div>
+                <h1 class="font-extrabold text-lg md:text-xl leading-tight bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] bg-clip-text text-transparent">
+                    Kubo Bot
+                </h1>
+                <p class="text-xs text-slate-500 font-medium">Mascote Virtual Kawaii</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Audio Mute Toggle -->
+            <button id="audio-toggle-btn" class="glass-btn p-2.5 rounded-xl text-slate-700 flex items-center justify-center hover:text-[var(--primary)] text-lg" title="Som Lado/Desligado">
+                <span id="audio-icon">🔊</span>
+            </button>
+
+            <!-- Reset Pet State -->
+            <button id="reset-btn" class="glass-btn px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-red-500 flex items-center gap-1.5" title="Reiniciar Mascote">
+                <span>🔄</span>
+                <span class="hidden sm:inline">Reiniciar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full max-w-5xl z-20 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center my-auto">
+        
+        <!-- Left Side: Status HUD & Stats (4 cols) -->
+        <section class="lg:col-span-4 flex flex-col gap-4 order-2 lg:order-1">
+            <div class="glass-panel rounded-3xl p-5 md:p-6 flex flex-col gap-4">
+                
+                <!-- Level & XP Badge -->
+                <div class="flex items-center justify-between border-b border-white/60 pb-3">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Status Geral</span>
+                        <h2 id="pet-stage-title" class="font-bold text-slate-700 text-base md:text-lg">Nível 1 • Bebê Robô</h2>
+                    </div>
+                    <div class="bg-[var(--primary-light)] text-[var(--primary)] font-extrabold px-3 py-1 rounded-full text-xs shadow-sm">
+                        XP: <span id="xp-counter">0</span>/100
+                    </div>
+                </div>
+
+                <!-- Status Bars -->
+                <!-- 1. Bateria ( Hunger / Battery ) -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="flex items-center gap-1.5 text-slate-700">
+                            <span>🔋</span> Bateria / Fome
+                        </span>
+                        <span id="stat-battery-num" class="text-slate-500">80%</span>
+                    </div>
+                    <div class="w-full bg-slate-200/60 rounded-full h-3.5 p-0.5 overflow-hidden backdrop-blur-sm border border-white">
+                        <div id="stat-battery-bar" class="progress-bar-fill h-full rounded-full bg-emerald-400 shadow-sm" style="width: 80%;"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Felicidade -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="flex items-center gap-1.5 text-slate-700">
+                            <span>💖</span> Felicidade
+                        </span>
+                        <span id="stat-happy-num" class="text-slate-500">90%</span>
+                    </div>
+                    <div class="w-full bg-slate-200/60 rounded-full h-3.5 p-0.5 overflow-hidden backdrop-blur-sm border border-white">
+                        <div id="stat-happy-bar" class="progress-bar-fill h-full rounded-full bg-pink-400 shadow-sm" style="width: 90%;"></div>
+                    </div>
+                </div>
+
+                <!-- 3. Energia -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="flex items-center gap-1.5 text-slate-700">
+                            <span>💤</span> Energia
+                        </span>
+                        <span id="stat-energy-num" class="text-slate-500">70%</span>
+                    </div>
+                    <div class="w-full bg-slate-200/60 rounded-full h-3.5 p-0.5 overflow-hidden backdrop-blur-sm border border-white">
+                        <div id="stat-energy-bar" class="progress-bar-fill h-full rounded-full bg-indigo-400 shadow-sm" style="width: 70%;"></div>
+                    </div>
+                </div>
+
+                <!-- Mood Status Text -->
+                <div class="mt-1 bg-white/50 rounded-2xl p-3 text-center border border-white/80">
+                    <p class="text-xs font-semibold text-slate-500">Estado Atual:</p>
+                    <p id="pet-mood-text" class="text-sm font-bold text-[var(--primary)] transition-all">Kubo está radiante e pronto para brincar!</p>
+                </div>
+            </div>
+
+            <!-- Customization Drawer Trigger -->
+            <div class="glass-panel rounded-3xl p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🎨</span>
+                    <div>
+                        <p class="text-xs font-bold text-slate-700">Personalizar Kubo</p>
+                        <p class="text-[11px] text-slate-500">Cores e Acessórios</p>
+                    </div>
+                </div>
+                <button id="open-customizer-btn" class="glass-btn text-xs font-bold px-3.5 py-2 rounded-xl text-slate-700 hover:bg-[var(--primary-light)] hover:text-[var(--primary)] transition-all">
+                    Customizar ✨
+                </button>
+            </div>
+        </section>
+
+        <!-- Center Column: Inline SVG Mascot Stage (5 cols) -->
+        <section class="lg:col-span-5 flex flex-col items-center justify-center relative py-4 order-1 lg:order-2">
+            
+            <!-- Thought / Speech Bubble -->
+            <div id="speech-bubble" class="absolute -top-4 md:-top-6 bg-white/90 backdrop-blur-md border border-white text-slate-700 text-xs md:text-sm font-bold px-4 py-2 rounded-2xl shadow-lg transition-all duration-300 opacity-100 transform translate-y-0 z-30 flex items-center gap-2">
+                <span id="bubble-icon">✨</span>
+                <span id="bubble-text">Olá! Eu sou o Kubo. Vamos brincar?</span>
+                <!-- Speech Bubble Tail -->
+                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-white/90"></div>
+            </div>
+
+            <!-- Pet Stage Container -->
+            <div id="pet-stage" class="relative w-full max-w-[320px] aspect-square flex items-center justify-center cursor-pointer group">
+                
+                <!-- Floor Soft Shadow / Aura -->
+                <div class="absolute bottom-4 w-48 h-8 bg-black/10 rounded-[100%] blur-md transition-all duration-500 group-hover:scale-95 group-hover:bg-black/15"></div>
+
+                <!-- Floating Particle Emitter Layer -->
+                <div id="particle-layer" class="absolute inset-0 pointer-events-none z-30"></div>
+
+                <!-- INLINE SVG ROBOT MASCOT -->
+                <svg id="robot-svg" class="w-64 h-64 md:w-72 md:h-72 robot-floating transition-transform duration-300 filter drop-shadow-xl" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    
+                    <!-- Antenna -->
+                    <g id="antenna-group">
+                        <rect x="145" y="25" width="10" height="30" rx="5" fill="#C4C9E0" />
+                        <circle id="antenna-ball" cx="150" cy="20" r="12" fill="var(--primary)" class="antenna-glow" />
+                        <circle cx="150" cy="20" r="5" fill="#FFFFFF" opacity="0.8" />
+                    </g>
+
+                    <!-- Robot Ears / Side Headsets -->
+                    <g id="ears">
+                        <!-- Left Ear -->
+                        <rect x="38" y="105" width="20" height="45" rx="10" fill="var(--secondary)" />
+                        <rect x="42" y="112" width="12" height="31" rx="6" fill="#FFFFFF" opacity="0.6" />
+                        <!-- Right Ear -->
+                        <rect x="242" y="105" width="20" height="45" rx="10" fill="var(--secondary)" />
+                        <rect x="246" y="112" width="12" height="31" rx="6" fill="#FFFFFF" opacity="0.6" />
+                    </g>
+
+                    <!-- Main Outer Body / Head Shape (Chubby Baymax/BMO style) -->
+                    <rect x="50" y="50" width="200" height="190" rx="65" fill="var(--robot-main)" stroke="#FFFFFF" stroke-width="4" />
+                    
+                    <!-- Inner Body Soft Gradient Overlay / Belly -->
+                    <path d="M 75,140 Q 150,150 225,140 C 230,200 210,230 150,232 C 90,230 70,200 75,140 Z" fill="var(--primary-light)" opacity="0.4" />
+
+                    <!-- Screen Frame (Dark Digital Screen) -->
+                    <rect id="robot-screen-frame" x="75" y="75" width="150" height="100" rx="35" fill="var(--robot-screen)" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                    <rect x="80" y="80" width="140" height="30" rx="15" fill="#FFFFFF" opacity="0.06" />
+
+                    <!-- Dynamic Facial Expressions Group -->
+                    <g id="face-expressions">
+                        
+                        <!-- 1. Normal/Happy Face Eyes -->
+                        <g id="face-happy" class="expression-layer">
+                            <!-- Left Eye -->
+                            <g class="blink-animation">
+                                <circle cx="115" cy="120" r="16" fill="#FFFFFF" />
+                                <circle cx="115" cy="120" r="13" fill="#1A1A2E" />
+                                <circle cx="110" cy="115" r="5" fill="#FFFFFF" />
+                                <circle cx="120" cy="123" r="2.5" fill="#FFFFFF" />
+                            </g>
+                            <!-- Right Eye -->
+                            <g class="blink-animation">
+                                <circle cx="185" cy="120" r="16" fill="#FFFFFF" />
+                                <circle cx="185" cy="120" r="13" fill="#1A1A2E" />
+                                <circle cx="180" cy="115" r="5" fill="#FFFFFF" />
+                                <circle cx="190" cy="123" r="2.5" fill="#FFFFFF" />
+                            </g>
+                        </g>
+
+                        <!-- 2. Sleeping Face Eyes (u u) -->
+                        <g id="face-sleeping" class="expression-layer hidden">
+                            <path d="M 102 122 Q 115 134 128 122" stroke="#60A5FA" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                            <path d="M 172 122 Q 185 134 198 122" stroke="#60A5FA" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                        </g>
+
+                        <!-- 3. Eating / Super Happy Eyes (^ ^) -->
+                        <g id="face-eating" class="expression-layer hidden">
+                            <path d="M 102 125 L 115 110 L 128 125" stroke="#FF94B9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                            <path d="M 172 125 L 185 110 L 198 125" stroke="#FF94B9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                        </g>
+
+                        <!-- 4. Playful / Sparkle Eyes (★ ★) -->
+                        <g id="face-playing" class="expression-layer hidden">
+                            <!-- Left Star Eye -->
+                            <path d="M115 106 L118 114 L127 115 L120 121 L122 130 L115 125 L108 130 L110 121 L103 115 L112 114 Z" fill="#FFD700" />
+                            <!-- Right Star Eye -->
+                            <path d="M185 106 L188 114 L197 115 L190 121 L192 130 L185 125 L178 130 L180 121 L173 115 L182 114 Z" fill="#FFD700" />
+                        </g>
+
+                        <!-- 5. Sad / Low Energy Eyes (T_T) -->
+                        <g id="face-sad" class="expression-layer hidden">
+                            <path d="M 102 115 L 128 120" stroke="#94A3B8" stroke-width="4.5" stroke-linecap="round" />
+                            <path d="M 172 120 L 198 115" stroke="#94A3B8" stroke-width="4.5" stroke-linecap="round" />
+                            <!-- Tear drops -->
+                            <path d="M 108 124 C 108 132 104 136 104 136 C 104 136 112 136 112 124 Z" fill="#60A5FA" opacity="0.8" />
+                            <path d="M 192 124 C 192 132 188 136 188 136 C 188 136 196 136 196 124 Z" fill="#60A5FA" opacity="0.8" />
+                        </g>
+
+                        <!-- 6. Critical / Depleted Eyes (x x) -->
+                        <g id="face-critical" class="expression-layer hidden">
+                            <path d="M 105 110 L 125 130 M 125 110 L 105 130" stroke="#EF4444" stroke-width="5" stroke-linecap="round" />
+                            <path d="M 175 110 L 195 130 M 195 110 L 175 130" stroke="#EF4444" stroke-width="5" stroke-linecap="round" />
+                        </g>
+
+                        <!-- Blushing Cheeks -->
+                        <circle id="left-cheek" cx="95" cy="138" r="10" fill="#FF80BF" opacity="0.5" />
+                        <circle id="right-cheek" cx="205" cy="138" r="10" fill="#FF80BF" opacity="0.5" />
+
+                        <!-- Dynamic Mouth Shapes -->
+                        <g id="mouth-group">
+                            <!-- Mouth Normal Curved Smile -->
+                            <path id="mouth-normal" d="M 138 142 Q 150 152 162 142" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none" />
+                            <!-- Mouth Open Happy (Hidden by default) -->
+                            <path id="mouth-open" d="M 140 142 Q 150 162 160 142 Z" fill="#FF80BF" stroke="#FFFFFF" stroke-width="2" class="hidden" />
+                            <!-- Mouth Sad Arc (Hidden by default) -->
+                            <path id="mouth-sad" d="M 140 148 Q 150 138 160 148" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none" class="hidden" />
+                            <!-- Mouth Sleeping 'o' (Hidden by default) -->
+                            <circle id="mouth-sleep" cx="150" cy="145" r="4" fill="#FFFFFF" class="hidden" />
+                        </g>
+
+                    </g> <!-- End Face Group -->
+
+                    <!-- Cute Chest Core / Heart Icon -->
+                    <g id="chest-core">
+                        <circle cx="150" cy="195" r="16" fill="var(--primary-light)" />
+                        <path id="chest-heart" d="M 150 199 C 150 199 141 193 141 188 C 141 185 143 183 146 183 C 148 183 149 184 150 185 C 151 184 152 183 154 183 C 157 183 159 185 159 188 C 159 193 150 199 150 199 Z" fill="var(--primary)" />
+                    </g>
+
+                    <!-- Chubby Hands -->
+                    <g id="hands">
+                        <!-- Left Hand -->
+                        <circle id="left-hand" cx="42" cy="170" r="14" fill="var(--robot-accent)" stroke="#FFFFFF" stroke-width="2" />
+                        <!-- Right Hand -->
+                        <circle id="right-hand" cx="258" cy="170" r="14" fill="var(--robot-accent)" stroke="#FFFFFF" stroke-width="2" />
+                    </g>
+
+                    <!-- Chubby Feet -->
+                    <g id="feet">
+                        <rect x="100" y="232" width="32" height="16" rx="8" fill="var(--secondary)" />
+                        <rect x="168" y="232" width="32" height="16" rx="8" fill="var(--secondary)" />
+                    </g>
+
+                    <!-- Accessories Layers (Toggleable via JS) -->
+                    <g id="accessories-group">
+                        
+                        <!-- Bowtie -->
+                        <g id="acc-bowtie" class="hidden">
+                            <polygon points="135,215 150,222 135,229" fill="#FF5252" />
+                            <polygon points="165,215 150,222 165,229" fill="#FF5252" />
+                            <circle cx="150" cy="222" r="4" fill="#FF8A8A" />
+                        </g>
+
+                        <!-- Kawaii Glasses -->
+                        <g id="acc-glasses" class="hidden">
+                            <circle cx="115" cy="120" r="20" fill="none" stroke="#FFD700" stroke-width="4" />
+                            <circle cx="185" cy="120" r="20" fill="none" stroke="#FFD700" stroke-width="4" />
+                            <line x1="135" y1="120" x2="165" y2="120" stroke="#FFD700" stroke-width="4" />
+                        </g>
+
+                        <!-- Cute Crown -->
+                        <g id="acc-crown" class="hidden">
+                            <path d="M 125 52 L 132 32 L 142 44 L 150 25 L 158 44 L 168 32 L 175 52 Z" fill="#FFD700" stroke="#FFA000" stroke-width="2" />
+                            <circle cx="132" cy="32" r="3" fill="#FF5252" />
+                            <circle cx="150" cy="25" r="3.5" fill="#40C4FF" />
+                            <circle cx="168" cy="32" r="3" fill="#FF5252" />
+                        </g>
+
+                        <!-- Headphone Band -->
+                        <g id="acc-headphones" class="hidden">
+                            <path d="M 50 115 A 105 105 0 0 1 250 115" fill="none" stroke="#333344" stroke-width="6" stroke-linecap="round" />
+                        </g>
+                    </g>
+
+                </svg>
+            </div>
+            
+            <p class="text-xs text-slate-400 font-medium mt-2">Clique no Kubo para dar carinho! 💖</p>
+        </section>
+
+        <!-- Right Side: Primary Actions HUD (3 cols) -->
+        <section class="lg:col-span-3 flex flex-col gap-3 order-3">
+            <div class="glass-panel rounded-3xl p-5 flex flex-col gap-3">
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-1">Ações do Mascote</h3>
+
+                <!-- 1. Feed Action -->
+                <button id="btn-feed" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
+                        🔋
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-700 text-sm">Alimentar</div>
+                        <div class="text-[11px] text-slate-500">+30% Bateria</div>
+                    </div>
+                </button>
+
+                <!-- 2. Play Action -->
+                <button id="btn-play" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group">
+                    <div class="w-11 h-11 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
+                        🎮
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-700 text-sm">Brincar</div>
+                        <div class="text-[11px] text-slate-500">+25% Felicidade</div>
+                    </div>
+                </button>
+
+                <!-- 3. Petting Action -->
+                <button id="btn-pet" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group">
+                    <div class="w-11 h-11 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
+                        💖
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-700 text-sm">Fazer Carinho</div>
+                        <div class="text-[11px] text-slate-500">+15% Amor</div>
+                    </div>
+                </button>
+
+                <!-- 4. Sleep Toggle Action -->
+                <button id="btn-sleep" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group border-indigo-200">
+                    <div id="sleep-btn-icon" class="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
+                        💤
+                    </div>
+                    <div>
+                        <div id="sleep-btn-title" class="font-bold text-slate-700 text-sm">Dormir</div>
+                        <div id="sleep-btn-desc" class="text-[11px] text-slate-500">Recupera Energia</div>
+                    </div>
+                </button>
+
+                <!-- 5. Mini-Game Launcher -->
+                <button id="btn-minigame" class="mt-1 w-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white font-bold py-3 px-4 rounded-2xl shadow-lg hover:shadow-xl hover:opacity-95 transition-all flex items-center justify-center gap-2 text-sm">
+                    <span>⭐</span>
+                    <span>Mini-Game Estrelas</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Footer Information -->
+    <footer class="w-full max-w-5xl z-20 mt-6 text-center text-xs text-slate-500 font-medium flex flex-col sm:flex-row justify-between items-center gap-2 border-t border-white/50 pt-4">
+        <div>
+            Design Sênior UI/UX &amp; Front-End • <span class="font-bold text-slate-700">Portfólio Interativo</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="bg-white/60 px-2.5 py-1 rounded-lg">HTML5 Canvas</span>
+            <span class="bg-white/60 px-2.5 py-1 rounded-lg">Web Audio API</span>
+            <span class="bg-white/60 px-2.5 py-1 rounded-lg">Tailwind CSS</span>
+        </div>
+    </footer>
+
+    <!-- Customization Modal Drawer -->
+    <div id="customizer-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 shadow-2xl transform scale-95 transition-transform duration-300" id="customizer-content">
+            
+            <div class="flex justify-between items-center border-b border-white/60 pb-3 mb-4">
+                <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <span>🎨</span> Personalizar o Kubo
+                </h3>
+                <button id="close-customizer-btn" class="w-8 h-8 rounded-full bg-slate-200/60 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">
+                    ✕
+                </button>
+            </div>
+
+            <div class="space-y-5">
+                <!-- Color Themes Palette -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                        Paleta de Cores (Skins)
+                    </label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <button data-theme="theme-pink" class="theme-select-btn p-2 rounded-2xl border-2 border-pink-400 bg-pink-100 flex flex-col items-center gap-1 hover:scale-105 transition-transform">
+                            <span class="w-6 h-6 rounded-full bg-[#FF94B9] shadow-sm"></span>
+                            <span class="text-[10px] font-bold text-slate-600">Rosa</span>
+                        </button>
+
+                        <button data-theme="theme-blue" class="theme-select-btn p-2 rounded-2xl border-2 border-transparent bg-blue-100 flex flex-col items-center gap-1 hover:scale-105 transition-transform">
+                            <span class="w-6 h-6 rounded-full bg-[#70B2FF] shadow-sm"></span>
+                            <span class="text-[10px] font-bold text-slate-600">Nuvem</span>
+                        </button>
+
+                        <button data-theme="theme-purple" class="theme-select-btn p-2 rounded-2xl border-2 border-transparent bg-purple-100 flex flex-col items-center gap-1 hover:scale-105 transition-transform">
+                            <span class="w-6 h-6 rounded-full bg-[#B185FF] shadow-sm"></span>
+                            <span class="text-[10px] font-bold text-slate-600">Lilás</span>
+                        </button>
+
+                        <button data-theme="theme-mint" class="theme-select-btn p-2 rounded-2xl border-2 border-transparent bg-teal-100 flex flex-col items-center gap-1 hover:scale-105 transition-transform">
+                            <span class="w-6 h-6 rounded-full bg-[#52D6B6] shadow-sm"></span>
+                            <span class="text-[10px] font-bold text-slate-600">Matcha</span>
+                        </button>
+
+                        <button data-theme="theme-yellow" class="theme-select-btn p-2 rounded-2xl border-2 border-transparent bg-amber-100 flex flex-col items-center gap-1 hover:scale-105 transition-transform">
+                            <span class="w-6 h-6 rounded-full bg-[#FFB347] shadow-sm"></span>
+                            <span class="text-[10px] font-bold text-slate-600">Sol</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Accessories Toggles -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                        Acessórios Especiais
+                    </label>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <button data-acc="acc-bowtie" class="acc-toggle-btn glass-btn p-3 rounded-2xl flex items-center justify-between text-xs font-bold text-slate-700">
+                            <span>🎀 Gravatinha</span>
+                            <span class="acc-status opacity-40">Off</span>
+                        </button>
+
+                        <button data-acc="acc-glasses" class="acc-toggle-btn glass-btn p-3 rounded-2xl flex items-center justify-between text-xs font-bold text-slate-700">
+                            <span>👓 Óculos Kawaii</span>
+                            <span class="acc-status opacity-40">Off</span>
+                        </button>
+
+                        <button data-acc="acc-crown" class="acc-toggle-btn glass-btn p-3 rounded-2xl flex items-center justify-between text-xs font-bold text-slate-700">
+                            <span>👑 Coroinha</span>
+                            <span class="acc-status opacity-40">Off</span>
+                        </button>
+
+                        <button data-acc="acc-headphones" class="acc-toggle-btn glass-btn p-3 rounded-2xl flex items-center justify-between text-xs font-bold text-slate-700">
+                            <span>🎧 Fones</span>
+                            <span class="acc-status opacity-40">Off</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <button id="save-customizer-btn" class="mt-6 w-full bg-[var(--primary)] text-white font-bold py-3 rounded-2xl shadow-lg hover:bg-[var(--primary-hover)] transition-all">
+                Concluído ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- Mini-Game Modal Overlay -->
+    <div id="minigame-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-lg rounded-3xl p-5 shadow-2xl relative flex flex-col items-center">
+            
+            <!-- Game Header -->
+            <div class="w-full flex justify-between items-center mb-3">
+                <div>
+                    <h3 class="font-extrabold text-slate-800 text-lg flex items-center gap-1.5">
+                        <span>⭐</span> Pegar Estrelinhas
+                    </h3>
+                    <p class="text-xs text-slate-500">Mova o cesto com o mouse ou toque!</p>
+                </div>
+                <button id="close-minigame-btn" class="w-8 h-8 rounded-full bg-slate-200/60 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Game Stats Bar -->
+            <div class="w-full flex justify-between items-center bg-white/60 px-4 py-2 rounded-2xl text-xs font-bold text-slate-700 mb-3 border border-white">
+                <div>Pontuação: <span id="game-score" class="text-pink-500 text-sm">0</span></div>
+                <div>Tempo: <span id="game-timer" class="text-indigo-500 text-sm">20s</span></div>
+            </div>
+
+            <!-- Game Canvas Container -->
+            <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border-2 border-white bg-gradient-to-b from-indigo-900/20 to-pink-900/20 backdrop-blur-md shadow-inner">
+                <canvas id="game-canvas" class="w-full h-full block cursor-none"></canvas>
+                
+                <!-- Game Start/Restart Overlay -->
+                <div id="game-start-overlay" class="absolute inset-0 bg-slate-900/60 flex flex-col items-center justify-center gap-3 p-4 text-center">
+                    <span class="text-4xl animate-bounce">🌟</span>
+                    <h4 class="text-white font-extrabold text-xl">Ajude o Kubo a pegar energia!</h4>
+                    <p class="text-white/80 text-xs max-w-xs">Colete estrelas e baterias. Evite as nuvens pretas de poeira!</p>
+                    <button id="start-game-btn" class="mt-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-extrabold px-6 py-3 rounded-2xl shadow-xl hover:scale-105 transition-transform text-sm">
+                        Iniciar Jogo! 🚀
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- APPLICATION JAVASCRIPT LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* ==========================================================================
+               1. AUDIO SYNTHESIZER (Web Audio API - No External Sound Files Needed)
+               ========================================================================== */
+            class AudioSynth {
+                constructor() {
+                    this.ctx = null;
+                    this.muted = false;
+                }
+
+                init() {
+                    if (!this.ctx) {
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContext) {
+                            this.ctx = new AudioContext();
+                        }
+                    }
+                    if (this.ctx && this.ctx.state === 'suspended') {
+                        this.ctx.resume();
+                    }
+                }
+
+                playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.1) {
+                    if (this.muted) return;
+                    this.init();
+                    if (!this.ctx) return;
+
+                    try {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+
+                        osc.type = type;
+                        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+                        gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+
+                        osc.start();
+                        osc.stop(this.ctx.currentTime + duration);
+                    } catch (e) {
+                        console.error('Audio play error:', e);
+                    }
+                }
+
+                // Chime for buttons & actions
+                playPop() {
+                    this.playTone(523.25, 'sine', 0.1, 0.08); // C5
+                }
+
+                playFeed() {
+                    if (this.muted) return;
+                    this.playTone(523.25, 'triangle', 0.1, 0.1);
+                    setTimeout(() => this.playTone(659.25, 'triangle', 0.1, 0.1), 80);
+                    setTimeout(() => this.playTone(783.99, 'triangle', 0.15, 0.12), 160);
+                }
+
+                playPlay() {
+                    if (this.muted) return;
+                    this.playTone(587.33, 'sine', 0.08, 0.1);
+                    setTimeout(() => this.playTone(880, 'sine', 0.12, 0.12), 90);
+                }
+
+                playPet() {
+                    if (this.muted) return;
+                    this.playTone(440, 'sine', 0.2, 0.08);
+                    setTimeout(() => this.playTone(554.37, 'sine', 0.25, 0.08), 100);
+                }
+
+                playSleep() {
+                    if (this.muted) return;
+                    this.playTone(659.25, 'sine', 0.25, 0.08);
+                    setTimeout(() => this.playTone(523.25, 'sine', 0.35, 0.08), 200);
+                }
+
+                playStar() {
+                    this.playTone(987.77, 'triangle', 0.1, 0.1); // B5
+                }
+
+                playLevelUp() {
+                    if (this.muted) return;
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((note, idx) => {
+                        setTimeout(() => this.playTone(note, 'triangle', 0.2, 0.12), idx * 100);
+                    });
+                }
+            }
+
+            const synth = new AudioSynth();
+
+            /* ==========================================================================
+               2. PET STATE MANAGEMENT & PERSISTENCE
+               ========================================================================== */
+            const DEFAULT_STATE = {
+                battery: 85,
+                happiness: 90,
+                energy: 75,
+                xp: 20,
+                level: 1,
+                isSleeping: false,
+                currentTheme: 'theme-pink',
+                accessories: {
+                    'acc-bowtie': false,
+                    'acc-glasses': false,
+                    'acc-crown': false,
+                    'acc-headphones': false
+                }
+            };
+
+            let petState = loadState();
+
+            function loadState() {
+                try {
+                    const saved = localStorage.getItem('kubo_pet_state');
+                    return saved ? { ...DEFAULT_STATE, ...JSON.parse(saved) } : { ...DEFAULT_STATE };
+                } catch (e) {
+                    return { ...DEFAULT_STATE };
+                }
+            }
+
+            function saveState() {
+                try {
+                    localStorage.setItem('kubo_pet_state', JSON.stringify(petState));
+                } catch (e) {}
+            }
+
+            /* ==========================================================================
+               3. DOM ELEMENTS SELECTION
+               ========================================================================== */
+            const batteryBar = document.getElementById('stat-battery-bar');
+            const batteryNum = document.getElementById('stat-battery-num');
+            const happyBar = document.getElementById('stat-happy-bar');
+            const happyNum = document.getElementById('stat-happy-num');
+            const energyBar = document.getElementById('stat-energy-bar');
+            const energyNum = document.getElementById('stat-energy-num');
+            const xpCounter = document.getElementById('xp-counter');
+            const petStageTitle = document.getElementById('pet-stage-title');
+            const petMoodText = document.getElementById('pet-mood-text');
+
+            const robotSvg = document.getElementById('robot-svg');
+            const robotStage = document.getElementById('pet-stage');
+            const speechBubble = document.getElementById('speech-bubble');
+            const bubbleText = document.getElementById('bubble-text');
+            const bubbleIcon = document.getElementById('bubble-icon');
+            const nightOverlay = document.getElementById('night-overlay-layer');
+
+            // Buttons
+            const btnFeed = document.getElementById('btn-feed');
+            const btnPlay = document.getElementById('btn-play');
+            const btnPet = document.getElementById('btn-pet');
+            const btnSleep = document.getElementById('btn-sleep');
+            const btnMinigame = document.getElementById('btn-minigame');
+            const audioToggleBtn = document.getElementById('audio-toggle-btn');
+            const audioIcon = document.getElementById('audio-icon');
+            const resetBtn = document.getElementById('reset-btn');
+
+            // Customizer DOM
+            const customizerModal = document.getElementById('customizer-modal');
+            const openCustomizerBtn = document.getElementById('open-customizer-btn');
+            const closeCustomizerBtn = document.getElementById('close-customizer-btn');
+            const saveCustomizerBtn = document.getElementById('save-customizer-btn');
+            const themeBtns = document.querySelectorAll('.theme-select-btn');
+            const accBtns = document.querySelectorAll('.acc-toggle-btn');
+
+            /* ==========================================================================
+               4. FACIAL EXPRESSIONS & SVG CONTROLLER
+               ========================================================================== */
+            const expressions = {
+                happy: document.getElementById('face-happy'),
+                sleeping: document.getElementById('face-sleeping'),
+                eating: document.getElementById('face-eating'),
+                playing: document.getElementById('face-playing'),
+                sad: document.getElementById('face-sad'),
+                critical: document.getElementById('face-critical')
+            };
+
+            const mouths = {
+                normal: document.getElementById('mouth-normal'),
+                open: document.getElementById('mouth-open'),
+                sad: document.getElementById('mouth-sad'),
+                sleep: document.getElementById('mouth-sleep')
+            };
+
+            function setExpression(exprKey, mouthKey = 'normal', duration = 0) {
+                // Hide all expressions
+                Object.values(expressions).forEach(el => el && el.classList.add('hidden'));
+                Object.values(mouths).forEach(el => el && el.classList.add('hidden'));
+
+                // Show target expression
+                if (expressions[exprKey]) expressions[exprKey].classList.remove('hidden');
+                if (mouths[mouthKey]) mouths[mouthKey].classList.remove('hidden');
+
+                if (duration > 0) {
+                    setTimeout(() => {
+                        updatePetVisuals();
+                    }, duration);
+                }
+            }
+
+            function updatePetVisuals() {
+                // Check critical states
+                if (petState.isSleeping) {
+                    setExpression('sleeping', 'sleep');
+                    robotSvg.classList.remove('robot-floating');
+                    robotSvg.classList.add('robot-sleeping');
+                    nightOverlay.style.opacity = '1';
+                    return;
+                }
+
+                robotSvg.classList.remove('robot-sleeping');
+                robotSvg.classList.add('robot-floating');
+                nightOverlay.style.opacity = '0';
+
+                if (petState.battery <= 15 || petState.energy <= 15) {
+                    setExpression('critical', 'sad');
+                    setMoodText('Kubo está fraco! Precisa de bateria e descanso! ⚠️', '#EF4444');
+                } else if (petState.happiness < 30 || petState.battery < 35) {
+                    setExpression('sad', 'sad');
+                    setMoodText('Kubo está tristonho... Dê um pouco de atenção! 💔', '#F59E0B');
+                } else {
+                    setExpression('happy', 'normal');
+                    setMoodText('Kubo está feliz e cheio de vida! ✨', 'var(--primary)');
+                }
+            }
+
+            function setMoodText(text, color) {
+                petMoodText.textContent = text;
+                petMoodText.style.color = color;
+            }
+
+            function speak(text, icon = '✨', duration = 3500) {
+                bubbleText.textContent = text;
+                bubbleIcon.textContent = icon;
+                speechBubble.style.opacity = '1';
+                speechBubble.style.transform = 'translateY(0px)';
+
+                clearTimeout(speechBubble._timer);
+                speechBubble._timer = setTimeout(() => {
+                    speechBubble.style.opacity = '0';
+                    speechBubble.style.transform = 'translateY(-8px)';
+                }, duration);
+            }
+
+            /* ==========================================================================
+               5. HUD & PROGRESS BARS UPDATE
+               ========================================================================== */
+            function updateHUD() {
+                // Clamp values
+                petState.battery = Math.max(0, Math.min(100, petState.battery));
+                petState.happiness = Math.max(0, Math.min(100, petState.happiness));
+                petState.energy = Math.max(0, Math.min(100, petState.energy));
+
+                // Battery Bar
+                batteryBar.style.width = `${petState.battery}%`;
+                batteryNum.textContent = `${Math.round(petState.battery)}%`;
+                batteryBar.className = `progress-bar-fill h-full rounded-full shadow-sm ${
+                    petState.battery > 50 ? 'bg-emerald-400' : petState.battery > 25 ? 'bg-amber-400' : 'bg-red-400'
+                }`;
+
+                // Happiness Bar
+                happyBar.style.width = `${petState.happiness}%`;
+                happyNum.textContent = `${Math.round(petState.happiness)}%`;
+                happyBar.className = `progress-bar-fill h-full rounded-full shadow-sm ${
+                    petState.happiness > 50 ? 'bg-pink-400' : petState.happiness > 25 ? 'bg-amber-400' : 'bg-red-400'
+                }`;
+
+                // Energy Bar
+                energyBar.style.width = `${petState.energy}%`;
+                energyNum.textContent = `${Math.round(petState.energy)}%`;
+                energyBar.className = `progress-bar-fill h-full rounded-full shadow-sm ${
+                    petState.energy > 50 ? 'bg-indigo-400' : petState.energy > 25 ? 'bg-amber-400' : 'bg-red-400'
+                }`;
+
+                // XP & Level
+                xpCounter.textContent = petState.xp;
+                petStageTitle.textContent = `Nível ${petState.level} • ${
+                    petState.level === 1 ? 'Bebê Robô' : petState.level === 2 ? 'Robô Jovem' : 'Robô Mestre'
+                }`;
+
+                // Disable/Enable Action buttons during sleep
+                if (petState.isSleeping) {
+                    btnFeed.disabled = true;
+                    btnPlay.disabled = true;
+                    btnPet.disabled = true;
+                    btnFeed.classList.add('opacity-50', 'pointer-events-none');
+                    btnPlay.classList.add('opacity-50', 'pointer-events-none');
+                    btnPet.classList.add('opacity-50', 'pointer-events-none');
+
+                    document.getElementById('sleep-btn-title').textContent = 'Acordar';
+                    document.getElementById('sleep-btn-desc').textContent = 'Acordar o Kubo';
+                    document.getElementById('sleep-btn-icon').textContent = '☀️';
+                } else {
+                    btnFeed.disabled = false;
+                    btnPlay.disabled = false;
+                    btnPet.disabled = false;
+                    btnFeed.classList.remove('opacity-50', 'pointer-events-none');
+                    btnPlay.classList.remove('opacity-50', 'pointer-events-none');
+                    btnPet.classList.remove('opacity-50', 'pointer-events-none');
+
+                    document.getElementById('sleep-btn-title').textContent = 'Dormir';
+                    document.getElementById('sleep-btn-desc').textContent = 'Recupera Energia';
+                    document.getElementById('sleep-btn-icon').textContent = '💤';
+                }
+
+                updatePetVisuals();
+                saveState();
+            }
+
+            function addXP(amount) {
+                petState.xp += amount;
+                if (petState.xp >= 100) {
+                    petState.xp -= 100;
+                    petState.level += 1;
+                    synth.playLevelUp();
+                    speak(`EBA! O Kubo subiu para o Nível ${petState.level}! 🎉`, '🏆', 4500);
+                    spawnParticles('✨', 12);
+                }
+            }
+
+            /* ==========================================================================
+               6. ACTION BUTTON EVENTS & INTERACTION LOGIC
+               ========================================================================== */
+            // Feed Action
+            btnFeed.addEventListener('click', () => {
+                if (petState.isSleeping) return;
+                synth.playFeed();
+                petState.battery = Math.min(100, petState.battery + 30);
+                addXP(15);
+
+                setExpression('eating', 'open', 2200);
+                speak('Mmh... Bateria quentinha deliciosa! 🔋', '⚡');
+                spawnParticles('⚡', 6);
+                updateHUD();
+            });
+
+            // Play Action
+            btnPlay.addEventListener('click', () => {
+                if (petState.isSleeping) return;
+                if (petState.energy < 15) {
+                    speak('Estou muito cansado para brincar... Zzz', '💤');
+                    synth.playPop();
+                    return;
+                }
+
+                synth.playPlay();
+                petState.happiness = Math.min(100, petState.happiness + 25);
+                petState.energy = Math.max(0, petState.energy - 12);
+                addXP(20);
+
+                setExpression('playing', 'open', 2500);
+                speak('Eba! Adoro jogar com você! 🎮', '🌟');
+                spawnParticles('⭐', 7);
+                updateHUD();
+            });
+
+            // Pet Action
+            btnPet.addEventListener('click', () => {
+                if (petState.isSleeping) return;
+                synth.playPet();
+                petState.happiness = Math.min(100, petState.happiness + 15);
+                addXP(8);
+
+                setExpression('happy', 'open', 1800);
+                speak('Nossa, que carinho bom! ❤️', '💖');
+                spawnParticles('💖', 8);
+                updateHUD();
+            });
+
+            // Direct Petting on Mascot SVG
+            robotStage.addEventListener('click', (e) => {
+                if (e.target.closest('#speech-bubble')) return;
+                if (petState.isSleeping) {
+                    speak('Shh... O Kubo está dormindo... 💤', '🌙');
+                    synth.playPop();
+                    return;
+                }
+                synth.playPet();
+                petState.happiness = Math.min(100, petState.happiness + 10);
+                addXP(5);
+                setExpression('happy', 'open', 1500);
+                speak('Ooooh, carinho direto! 🌸', '💖');
+                spawnParticles('💖', 6);
+                updateHUD();
+            });
+
+            // Sleep Toggle Action
+            btnSleep.addEventListener('click', () => {
+                petState.isSleeping = !petState.isSleeping;
+                if (petState.isSleeping) {
+                    synth.playSleep();
+                    speak('Boa noite! Vou tirar uma soneca... 💤', '🌙');
+                    spawnZzzParticles();
+                } else {
+                    synth.playPop();
+                    speak('Bom dia! Me sinto renovado! ☀️', '✨');
+                }
+                updateHUD();
+            });
+
+            /* Floating Heart / Star Particle Emitter */
+            function spawnParticles(symbol, count = 6) {
+                const layer = document.getElementById('particle-layer');
+                for (let i = 0; i < count; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'absolute text-xl pointer-events-none z-40';
+                    el.textContent = symbol;
+
+                    const tx = (Math.random() - 0.5) * 120;
+                    el.style.left = `calc(50% + ${(Math.random() - 0.5) * 60}px)`;
+                    el.style.top = '60%';
+                    el.style.setProperty('--tx', `${tx}px`);
+                    el.style.animation = `heartPop ${1 + Math.random() * 0.8}s ease-out forwards`;
+
+                    layer.appendChild(el);
+                    setTimeout(() => el.remove(), 1800);
+                }
+            }
+
+            function spawnZzzParticles() {
+                if (!petState.isSleeping) return;
+                const layer = document.getElementById('particle-layer');
+                const zzz = document.createElement('div');
+                zzz.className = 'zzz-particle';
+                zzz.textContent = 'Zzz...';
+                zzz.style.left = '65%';
+                zzz.style.top = '25%';
+
+                layer.appendChild(zzz);
+                setTimeout(() => zzz.remove(), 2500);
+
+                if (petState.isSleeping) {
+                    setTimeout(spawnZzzParticles, 2000);
+                }
+            }
+
+            /* ==========================================================================
+               7. STATS DECAY TICKER & SLEEP RECOVERY TIMER
+               ========================================================================== */
+            setInterval(() => {
+                if (petState.isSleeping) {
+                    // Sleep restores energy slowly
+                    if (petState.energy < 100) {
+                        petState.energy = Math.min(100, petState.energy + 4);
+                        updateHUD();
+                    }
+                } else {
+                    // Natural decay over time
+                    petState.battery = Math.max(0, petState.battery - 0.4);
+                    petState.happiness = Math.max(0, petState.happiness - 0.3);
+                    petState.energy = Math.max(0, petState.energy - 0.25);
+                    updateHUD();
+                }
+            }, 3500);
+
+            /* ==========================================================================
+               8. CUSTOMIZER MODAL & THEME CONTROLLER
+               ========================================================================== */
+            function applyTheme(themeClass) {
+                document.body.className = document.body.className
+                    .split(' ')
+                    .filter(c => !c.startsWith('theme-'))
+                    .join(' ');
+                document.body.classList.add(themeClass);
+
+                petState.currentTheme = themeClass;
+
+                // Update active button ring
+                themeBtns.forEach(btn => {
+                    if (btn.dataset.theme === themeClass) {
+                        btn.classList.add('border-pink-400');
+                        btn.classList.remove('border-transparent');
+                    } else {
+                        btn.classList.remove('border-pink-400');
+                        btn.classList.add('border-transparent');
+                    }
+                });
+
+                saveState();
+            }
+
+            function toggleAccessory(accId) {
+                petState.accessories[accId] = !petState.accessories[accId];
+                updateAccessoriesVisuals();
+                saveState();
+            }
+
+            function updateAccessoriesVisuals() {
+                Object.keys(petState.accessories).forEach(accId => {
+                    const el = document.getElementById(accId);
+                    const isEquipped = petState.accessories[accId];
+                    if (el) {
+                        if (isEquipped) el.classList.remove('hidden');
+                        else el.classList.add('hidden');
+                    }
+
+                    // Update drawer button badge
+                    const btn = document.querySelector(`.acc-toggle-btn[data-acc="${accId}"]`);
+                    if (btn) {
+                        const status = btn.querySelector('.acc-status');
+                        if (isEquipped) {
+                            status.textContent = 'On ✨';
+                            status.classList.remove('opacity-40');
+                            status.classList.add('text-pink-500', 'font-bold');
+                            btn.classList.add('bg-pink-50/80', 'border-pink-300');
+                        } else {
+                            status.textContent = 'Off';
+                            status.classList.add('opacity-40');
+                            status.classList.remove('text-pink-500', 'font-bold');
+                            btn.classList.remove('bg-pink-50/80', 'border-pink-300');
+                        }
+                    }
+                });
+            }
+
+            openCustomizerBtn.addEventListener('click', () => {
+                synth.playPop();
+                customizerModal.classList.remove('opacity-0', 'pointer-events-none');
+                document.getElementById('customizer-content').classList.remove('scale-95');
+            });
+
+            const closeCustomizer = () => {
+                synth.playPop();
+                customizerModal.classList.add('opacity-0', 'pointer-events-none');
+                document.getElementById('customizer-content').classList.add('scale-95');
+            };
+
+            closeCustomizerBtn.addEventListener('click', closeCustomizer);
+            saveCustomizerBtn.addEventListener('click', closeCustomizer);
+
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    synth.playPop();
+                    applyTheme(btn.dataset.theme);
+                });
+            });
+
+            accBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    synth.playPop();
+                    toggleAccessory(btn.dataset.acc);
+                });
+            });
+
+            // Audio Toggle
+            audioToggleBtn.addEventListener('click', () => {
+                synth.muted = !synth.muted;
+                audioIcon.textContent = synth.muted ? '🔇' : '🔊';
+            });
+
+            // Reset App
+            resetBtn.addEventListener('click', () => {
+                if (confirm('Deseja reiniciar todas as estatísticas do Kubo?')) {
+                    petState = { ...DEFAULT_STATE };
+                    applyTheme(petState.currentTheme);
+                    updateAccessoriesVisuals();
+                    updateHUD();
+                    speak('Reiniciado com sucesso! Olá de novo! ✨', '🤖');
+                }
+            });
+
+            /* ==========================================================================
+               9. MINI-GAME LOGIC (FALLING STARS CANVAS GAME)
+               ========================================================================== */
+            const minigameModal = document.getElementById('minigame-modal');
+            const closeMinigameBtn = document.getElementById('close-minigame-btn');
+            const startGameBtn = document.getElementById('start-game-btn');
+            const gameStartOverlay = document.getElementById('game-start-overlay');
+            const gameScoreEl = document.getElementById('game-score');
+            const gameTimerEl = document.getElementById('game-timer');
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let gameActive = false;
+            let gameScore = 0;
+            let gameTimeLeft = 20;
+            let gameTimerInterval = null;
+            let animationFrameId = null;
+
+            let basket = { x: 0, y: 0, width: 60, height: 20 };
+            let items = [];
+
+            function resizeCanvas() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                basket.y = canvas.height - 30;
+                basket.x = canvas.width / 2 - basket.width / 2;
+            }
+
+            btnMinigame.addEventListener('click', () => {
+                if (petState.isSleeping) {
+                    speak('O Kubo está dormindo! Acorde-o primeiro! 💤');
+                    synth.playPop();
+                    return;
+                }
+                synth.playPop();
+                minigameModal.classList.remove('opacity-0', 'pointer-events-none');
+                resizeCanvas();
+                gameStartOverlay.classList.remove('hidden');
+            });
+
+            closeMinigameBtn.addEventListener('click', () => {
+                stopGame();
+                minigameModal.classList.add('opacity-0', 'pointer-events-none');
+            });
+
+            // Mouse / Touch Controls for Basket
+            function handleMove(clientX) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = clientX - rect.left;
+                basket.x = Math.max(0, Math.min(canvas.width - basket.width, mouseX - basket.width / 2));
+            }
+
+            canvas.addEventListener('mousemove', (e) => handleMove(e.clientX));
+            canvas.addEventListener('touchmove', (e) => {
+                if (e.touches[0]) handleMove(e.touches[0].clientX);
+            });
+
+            startGameBtn.addEventListener('click', () => {
+                gameStartOverlay.classList.add('hidden');
+                startGame();
+            });
+
+            function startGame() {
+                gameActive = true;
+                gameScore = 0;
+                gameTimeLeft = 20;
+                items = [];
+                gameScoreEl.textContent = '0';
+                gameTimerEl.textContent = '20s';
+
+                clearInterval(gameTimerInterval);
+                gameTimerInterval = setInterval(() => {
+                    gameTimeLeft--;
+                    gameTimerEl.textContent = `${gameTimeLeft}s`;
+                    if (gameTimeLeft <= 0) {
+                        endGame();
+                    }
+                }, 1000);
+
+                gameLoop();
+            }
+
+            function endGame() {
+                stopGame();
+                synth.playLevelUp();
+
+                // Reward pet
+                petState.happiness = Math.min(100, petState.happiness + Math.floor(gameScore * 1.5));
+                petState.battery = Math.min(100, petState.battery + Math.floor(gameScore * 1));
+                addXP(gameScore * 2);
+
+                speak(`Incrível! Você fez ${gameScore} pontos no Mini-Game! 🎉`, '⭐', 4500);
+                updateHUD();
+
+                gameStartOverlay.classList.remove('hidden');
+                gameStartOverlay.querySelector('h4').textContent = `Fim de Jogo! Pontos: ${gameScore}`;
+            }
+
+            function stopGame() {
+                gameActive = false;
+                clearInterval(gameTimerInterval);
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            }
+
+            function spawnGameItem() {
+                const types = [
+                    { symbol: '⭐', pts: 10, speed: 2.5 },
+                    { symbol: '🔋', pts: 15, speed: 3.0 },
+                    { symbol: '💖', pts: 8, speed: 2.0 },
+                    { symbol: '☁️', pts: -10, speed: 2.2 } // Cloud obstacle
+                ];
+                const type = types[Math.floor(Math.random() * types.length)];
+                items.push({
+                    x: Math.random() * (canvas.width - 30),
+                    y: -30,
+                    size: 26,
+                    ...type
+                });
+            }
+
+            function gameLoop() {
+                if (!gameActive) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Spawn items
+                if (Math.random() < 0.06) spawnGameItem();
+
+                // Draw Basket
+                ctx.fillStyle = '#FF94B9';
+                ctx.beginPath();
+                ctx.roundRect(basket.x, basket.y, basket.width, basket.height, 10);
+                ctx.fill();
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Basket icon label
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🤖', basket.x + basket.width / 2, basket.y + 15);
+
+                // Update & Draw Items
+                for (let i = items.length - 1; i >= 0; i--) {
+                    const item = items[i];
+                    item.y += item.speed;
+
+                    // Draw Item Symbol
+                    ctx.font = `${item.size}px sans-serif`;
+                    ctx.fillText(item.symbol, item.x, item.y);
+
+                    // Collision Check
+                    if (
+                        item.y >= basket.y - 10 &&
+                        item.y <= basket.y + basket.height &&
+                        item.x >= basket.x - 15 &&
+                        item.x <= basket.x + basket.width + 15
+                    ) {
+                        gameScore = Math.max(0, gameScore + item.pts);
+                        gameScoreEl.textContent = gameScore;
+
+                        if (item.pts > 0) synth.playStar();
+                        else synth.playPop();
+
+                        items.splice(i, 1);
+                        continue;
+                    }
+
+                    // Remove out of bounds
+                    if (item.y > canvas.height + 40) {
+                        items.splice(i, 1);
+                    }
+                }
+
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+
+            /* ==========================================================================
+               10. INITIALIZATION
+               ========================================================================== */
+            applyTheme(petState.currentTheme);
+            updateAccessoriesVisuals();
+            updateHUD();
+
+            // Greeting message
+            setTimeout(() => {
+                speak('Olá! Eu sou o Kubo. Que bom te ver aqui! ✨', '🌸');
+            }, 600);
+
+            window.addEventListener('resize', resizeCanvas);
+        });
+    </script>
+</body>
+</html>
