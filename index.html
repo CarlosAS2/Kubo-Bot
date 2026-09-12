@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="pt-BR" class="h-full w-full overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Kubo Bot - Robô Mascote Virtual Kawaii</title>
     
     <!-- Google Fonts -->
@@ -58,13 +58,20 @@
             --night-overlay: rgba(30, 25, 50, 0.45);
         }
 
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+            touch-action: manipulation;
+        }
+
         body {
             font-family: 'Quicksand', sans-serif;
             background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3));
             background-size: 300% 300%;
             animation: gradientShift 18s ease infinite;
             color: #4A4A68;
-            overflow-x: hidden;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -169,7 +176,7 @@
 
         @keyframes floatCloud {
             from { transform: translateX(-200px); }
-            to { transform: translateX(calc(100vw + 200px)); }
+            to { transform: translateX(calc(100% + 200px)); }
         }
 
         /* Floating Zzz elements */
@@ -271,12 +278,14 @@
         }
     </style>
 </head>
-<body class="theme-pink min-h-screen flex flex-col justify-between items-center relative overflow-x-hidden p-3 md:p-6">
+<body class="theme-pink min-h-screen w-full flex flex-col justify-between items-center relative p-3 md:p-6">
 
-    <!-- Ambient Floating Clouds -->
-    <div class="bg-cloud w-32 h-10 top-12 left-0" style="animation-duration: 35s;"></div>
-    <div class="bg-cloud w-48 h-14 top-1/4 left-0" style="animation-duration: 48s; animation-delay: -12s;"></div>
-    <div class="bg-cloud w-40 h-12 top-2/3 left-0" style="animation-duration: 40s; animation-delay: -22s;"></div>
+    <!-- Ambient Floating Clouds Isolated Container -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="bg-cloud w-32 h-10 top-12 left-0" style="animation-duration: 35s;"></div>
+        <div class="bg-cloud w-48 h-14 top-1/4 left-0" style="animation-duration: 48s; animation-delay: -12s;"></div>
+        <div class="bg-cloud w-40 h-12 top-2/3 left-0" style="animation-duration: 40s; animation-delay: -22s;"></div>
+    </div>
 
     <!-- Night Overlay for Sleep Mode -->
     <div id="night-overlay-layer" class="fixed inset-0 bg-slate-900/40 pointer-events-none z-10 opacity-0 backdrop-blur-[2px]"></div>
@@ -297,7 +306,7 @@
 
         <div class="flex items-center gap-2">
             <!-- Audio Mute Toggle -->
-            <button id="audio-toggle-btn" class="glass-btn p-2.5 rounded-xl text-slate-700 flex items-center justify-center hover:text-[var(--primary)] text-lg" title="Som Lado/Desligado">
+            <button id="audio-toggle-btn" class="glass-btn p-2.5 rounded-xl text-slate-700 flex items-center justify-center hover:text-[var(--primary)] text-lg" title="Som Ligar/Desligar">
                 <span id="audio-icon">🔊</span>
             </button>
 
@@ -429,7 +438,7 @@
                         <rect x="246" y="112" width="12" height="31" rx="6" fill="#FFFFFF" opacity="0.6" />
                     </g>
 
-                    <!-- Main Outer Body / Head Shape (Chubby Baymax/BMO style) -->
+                    <!-- Main Outer Body / Head Shape -->
                     <rect x="50" y="50" width="200" height="190" rx="65" fill="var(--robot-main)" stroke="#FFFFFF" stroke-width="4" />
                     
                     <!-- Inner Body Soft Gradient Overlay / Belly -->
@@ -472,24 +481,21 @@
                             <path d="M 172 125 L 185 110 L 198 125" stroke="#FF94B9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                         </g>
 
-                        <!-- 4. Playful / Sparkle Eyes (★ ★) -->
+                        <!-- 4. Playful / Sparkle Eyes -->
                         <g id="face-playing" class="expression-layer hidden">
-                            <!-- Left Star Eye -->
                             <path d="M115 106 L118 114 L127 115 L120 121 L122 130 L115 125 L108 130 L110 121 L103 115 L112 114 Z" fill="#FFD700" />
-                            <!-- Right Star Eye -->
                             <path d="M185 106 L188 114 L197 115 L190 121 L192 130 L185 125 L178 130 L180 121 L173 115 L182 114 Z" fill="#FFD700" />
                         </g>
 
-                        <!-- 5. Sad / Low Energy Eyes (T_T) -->
+                        <!-- 5. Sad / Low Energy Eyes -->
                         <g id="face-sad" class="expression-layer hidden">
                             <path d="M 102 115 L 128 120" stroke="#94A3B8" stroke-width="4.5" stroke-linecap="round" />
                             <path d="M 172 120 L 198 115" stroke="#94A3B8" stroke-width="4.5" stroke-linecap="round" />
-                            <!-- Tear drops -->
                             <path d="M 108 124 C 108 132 104 136 104 136 C 104 136 112 136 112 124 Z" fill="#60A5FA" opacity="0.8" />
                             <path d="M 192 124 C 192 132 188 136 188 136 C 188 136 196 136 196 124 Z" fill="#60A5FA" opacity="0.8" />
                         </g>
 
-                        <!-- 6. Critical / Depleted Eyes (x x) -->
+                        <!-- 6. Critical Eyes (x x) -->
                         <g id="face-critical" class="expression-layer hidden">
                             <path d="M 105 110 L 125 130 M 125 110 L 105 130" stroke="#EF4444" stroke-width="5" stroke-linecap="round" />
                             <path d="M 175 110 L 195 130 M 195 110 L 175 130" stroke="#EF4444" stroke-width="5" stroke-linecap="round" />
@@ -501,19 +507,15 @@
 
                         <!-- Dynamic Mouth Shapes -->
                         <g id="mouth-group">
-                            <!-- Mouth Normal Curved Smile -->
                             <path id="mouth-normal" d="M 138 142 Q 150 152 162 142" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none" />
-                            <!-- Mouth Open Happy (Hidden by default) -->
                             <path id="mouth-open" d="M 140 142 Q 150 162 160 142 Z" fill="#FF80BF" stroke="#FFFFFF" stroke-width="2" class="hidden" />
-                            <!-- Mouth Sad Arc (Hidden by default) -->
                             <path id="mouth-sad" d="M 140 148 Q 150 138 160 148" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none" class="hidden" />
-                            <!-- Mouth Sleeping 'o' (Hidden by default) -->
                             <circle id="mouth-sleep" cx="150" cy="145" r="4" fill="#FFFFFF" class="hidden" />
                         </g>
 
-                    </g> <!-- End Face Group -->
+                    </g>
 
-                    <!-- Cute Chest Core / Heart Icon -->
+                    <!-- Chest Core -->
                     <g id="chest-core">
                         <circle cx="150" cy="195" r="16" fill="var(--primary-light)" />
                         <path id="chest-heart" d="M 150 199 C 150 199 141 193 141 188 C 141 185 143 183 146 183 C 148 183 149 184 150 185 C 151 184 152 183 154 183 C 157 183 159 185 159 188 C 159 193 150 199 150 199 Z" fill="var(--primary)" />
@@ -521,9 +523,7 @@
 
                     <!-- Chubby Hands -->
                     <g id="hands">
-                        <!-- Left Hand -->
                         <circle id="left-hand" cx="42" cy="170" r="14" fill="var(--robot-accent)" stroke="#FFFFFF" stroke-width="2" />
-                        <!-- Right Hand -->
                         <circle id="right-hand" cx="258" cy="170" r="14" fill="var(--robot-accent)" stroke="#FFFFFF" stroke-width="2" />
                     </g>
 
@@ -533,24 +533,20 @@
                         <rect x="168" y="232" width="32" height="16" rx="8" fill="var(--secondary)" />
                     </g>
 
-                    <!-- Accessories Layers (Toggleable via JS) -->
+                    <!-- Accessories Layers -->
                     <g id="accessories-group">
-                        
-                        <!-- Bowtie -->
                         <g id="acc-bowtie" class="hidden">
                             <polygon points="135,215 150,222 135,229" fill="#FF5252" />
                             <polygon points="165,215 150,222 165,229" fill="#FF5252" />
                             <circle cx="150" cy="222" r="4" fill="#FF8A8A" />
                         </g>
 
-                        <!-- Kawaii Glasses -->
                         <g id="acc-glasses" class="hidden">
                             <circle cx="115" cy="120" r="20" fill="none" stroke="#FFD700" stroke-width="4" />
                             <circle cx="185" cy="120" r="20" fill="none" stroke="#FFD700" stroke-width="4" />
                             <line x1="135" y1="120" x2="165" y2="120" stroke="#FFD700" stroke-width="4" />
                         </g>
 
-                        <!-- Cute Crown -->
                         <g id="acc-crown" class="hidden">
                             <path d="M 125 52 L 132 32 L 142 44 L 150 25 L 158 44 L 168 32 L 175 52 Z" fill="#FFD700" stroke="#FFA000" stroke-width="2" />
                             <circle cx="132" cy="32" r="3" fill="#FF5252" />
@@ -558,7 +554,6 @@
                             <circle cx="168" cy="32" r="3" fill="#FF5252" />
                         </g>
 
-                        <!-- Headphone Band -->
                         <g id="acc-headphones" class="hidden">
                             <path d="M 50 115 A 105 105 0 0 1 250 115" fill="none" stroke="#333344" stroke-width="6" stroke-linecap="round" />
                         </g>
@@ -575,7 +570,6 @@
             <div class="glass-panel rounded-3xl p-5 flex flex-col gap-3">
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-1">Ações do Mascote</h3>
 
-                <!-- 1. Feed Action -->
                 <button id="btn-feed" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group">
                     <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
                         🔋
@@ -586,7 +580,6 @@
                     </div>
                 </button>
 
-                <!-- 2. Play Action -->
                 <button id="btn-play" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group">
                     <div class="w-11 h-11 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
                         🎮
@@ -597,7 +590,6 @@
                     </div>
                 </button>
 
-                <!-- 3. Petting Action -->
                 <button id="btn-pet" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group">
                     <div class="w-11 h-11 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
                         💖
@@ -608,7 +600,6 @@
                     </div>
                 </button>
 
-                <!-- 4. Sleep Toggle Action -->
                 <button id="btn-sleep" class="glass-btn p-3.5 rounded-2xl flex items-center gap-3 text-left w-full group border-indigo-200">
                     <div id="sleep-btn-icon" class="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
                         💤
@@ -619,7 +610,6 @@
                     </div>
                 </button>
 
-                <!-- 5. Mini-Game Launcher -->
                 <button id="btn-minigame" class="mt-1 w-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white font-bold py-3 px-4 rounded-2xl shadow-lg hover:shadow-xl hover:opacity-95 transition-all flex items-center justify-center gap-2 text-sm">
                     <span>⭐</span>
                     <span>Mini-Game Estrelas</span>
@@ -628,7 +618,7 @@
         </section>
     </main>
 
-    <!-- Footer Footer Information -->
+    <!-- Footer Information -->
     <footer class="w-full max-w-5xl z-20 mt-6 text-center text-xs text-slate-500 font-medium flex flex-col sm:flex-row justify-between items-center gap-2 border-t border-white/50 pt-4">
         <div>
             Design Sênior UI/UX &amp; Front-End • <span class="font-bold text-slate-700">Portfólio Interativo</span>
@@ -654,7 +644,6 @@
             </div>
 
             <div class="space-y-5">
-                <!-- Color Themes Palette -->
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                         Paleta de Cores (Skins)
@@ -687,7 +676,6 @@
                     </div>
                 </div>
 
-                <!-- Accessories Toggles -->
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                         Acessórios Especiais
@@ -727,7 +715,6 @@
     <div id="minigame-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="glass-panel w-full max-w-lg rounded-3xl p-5 shadow-2xl relative flex flex-col items-center">
             
-            <!-- Game Header -->
             <div class="w-full flex justify-between items-center mb-3">
                 <div>
                     <h3 class="font-extrabold text-slate-800 text-lg flex items-center gap-1.5">
@@ -740,17 +727,14 @@
                 </button>
             </div>
 
-            <!-- Game Stats Bar -->
             <div class="w-full flex justify-between items-center bg-white/60 px-4 py-2 rounded-2xl text-xs font-bold text-slate-700 mb-3 border border-white">
                 <div>Pontuação: <span id="game-score" class="text-pink-500 text-sm">0</span></div>
                 <div>Tempo: <span id="game-timer" class="text-indigo-500 text-sm">20s</span></div>
             </div>
 
-            <!-- Game Canvas Container -->
             <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border-2 border-white bg-gradient-to-b from-indigo-900/20 to-pink-900/20 backdrop-blur-md shadow-inner">
                 <canvas id="game-canvas" class="w-full h-full block cursor-none"></canvas>
                 
-                <!-- Game Start/Restart Overlay -->
                 <div id="game-start-overlay" class="absolute inset-0 bg-slate-900/60 flex flex-col items-center justify-center gap-3 p-4 text-center">
                     <span class="text-4xl animate-bounce">🌟</span>
                     <h4 class="text-white font-extrabold text-xl">Ajude o Kubo a pegar energia!</h4>
@@ -764,14 +748,10 @@
         </div>
     </div>
 
-
     <!-- APPLICATION JAVASCRIPT LOGIC -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            /* ==========================================================================
-               1. AUDIO SYNTHESIZER (Web Audio API - No External Sound Files Needed)
-               ========================================================================== */
             class AudioSynth {
                 constructor() {
                     this.ctx = null;
@@ -815,9 +795,8 @@
                     }
                 }
 
-                // Chime for buttons & actions
                 playPop() {
-                    this.playTone(523.25, 'sine', 0.1, 0.08); // C5
+                    this.playTone(523.25, 'sine', 0.1, 0.08);
                 }
 
                 playFeed() {
@@ -846,7 +825,7 @@
                 }
 
                 playStar() {
-                    this.playTone(987.77, 'triangle', 0.1, 0.1); // B5
+                    this.playTone(987.77, 'triangle', 0.1, 0.1);
                 }
 
                 playLevelUp() {
@@ -860,9 +839,6 @@
 
             const synth = new AudioSynth();
 
-            /* ==========================================================================
-               2. PET STATE MANAGEMENT & PERSISTENCE
-               ========================================================================== */
             const DEFAULT_STATE = {
                 battery: 85,
                 happiness: 90,
@@ -896,9 +872,6 @@
                 } catch (e) {}
             }
 
-            /* ==========================================================================
-               3. DOM ELEMENTS SELECTION
-               ========================================================================== */
             const batteryBar = document.getElementById('stat-battery-bar');
             const batteryNum = document.getElementById('stat-battery-num');
             const happyBar = document.getElementById('stat-happy-bar');
@@ -916,7 +889,6 @@
             const bubbleIcon = document.getElementById('bubble-icon');
             const nightOverlay = document.getElementById('night-overlay-layer');
 
-            // Buttons
             const btnFeed = document.getElementById('btn-feed');
             const btnPlay = document.getElementById('btn-play');
             const btnPet = document.getElementById('btn-pet');
@@ -926,7 +898,6 @@
             const audioIcon = document.getElementById('audio-icon');
             const resetBtn = document.getElementById('reset-btn');
 
-            // Customizer DOM
             const customizerModal = document.getElementById('customizer-modal');
             const openCustomizerBtn = document.getElementById('open-customizer-btn');
             const closeCustomizerBtn = document.getElementById('close-customizer-btn');
@@ -934,9 +905,6 @@
             const themeBtns = document.querySelectorAll('.theme-select-btn');
             const accBtns = document.querySelectorAll('.acc-toggle-btn');
 
-            /* ==========================================================================
-               4. FACIAL EXPRESSIONS & SVG CONTROLLER
-               ========================================================================== */
             const expressions = {
                 happy: document.getElementById('face-happy'),
                 sleeping: document.getElementById('face-sleeping'),
@@ -954,11 +922,9 @@
             };
 
             function setExpression(exprKey, mouthKey = 'normal', duration = 0) {
-                // Hide all expressions
                 Object.values(expressions).forEach(el => el && el.classList.add('hidden'));
                 Object.values(mouths).forEach(el => el && el.classList.add('hidden'));
 
-                // Show target expression
                 if (expressions[exprKey]) expressions[exprKey].classList.remove('hidden');
                 if (mouths[mouthKey]) mouths[mouthKey].classList.remove('hidden');
 
@@ -970,7 +936,6 @@
             }
 
             function updatePetVisuals() {
-                // Check critical states
                 if (petState.isSleeping) {
                     setExpression('sleeping', 'sleep');
                     robotSvg.classList.remove('robot-floating');
@@ -1013,43 +978,34 @@
                 }, duration);
             }
 
-            /* ==========================================================================
-               5. HUD & PROGRESS BARS UPDATE
-               ========================================================================== */
             function updateHUD() {
-                // Clamp values
                 petState.battery = Math.max(0, Math.min(100, petState.battery));
                 petState.happiness = Math.max(0, Math.min(100, petState.happiness));
                 petState.energy = Math.max(0, Math.min(100, petState.energy));
 
-                // Battery Bar
                 batteryBar.style.width = `${petState.battery}%`;
                 batteryNum.textContent = `${Math.round(petState.battery)}%`;
                 batteryBar.className = `progress-bar-fill h-full rounded-full shadow-sm ${
                     petState.battery > 50 ? 'bg-emerald-400' : petState.battery > 25 ? 'bg-amber-400' : 'bg-red-400'
                 }`;
 
-                // Happiness Bar
                 happyBar.style.width = `${petState.happiness}%`;
                 happyNum.textContent = `${Math.round(petState.happiness)}%`;
                 happyBar.className = `progress-bar-fill h-full rounded-full shadow-sm ${
                     petState.happiness > 50 ? 'bg-pink-400' : petState.happiness > 25 ? 'bg-amber-400' : 'bg-red-400'
                 }`;
 
-                // Energy Bar
                 energyBar.style.width = `${petState.energy}%`;
                 energyNum.textContent = `${Math.round(petState.energy)}%`;
                 energyBar.className = `progress-bar-fill h-full rounded-full shadow-sm ${
                     petState.energy > 50 ? 'bg-indigo-400' : petState.energy > 25 ? 'bg-amber-400' : 'bg-red-400'
                 }`;
 
-                // XP & Level
                 xpCounter.textContent = petState.xp;
                 petStageTitle.textContent = `Nível ${petState.level} • ${
                     petState.level === 1 ? 'Bebê Robô' : petState.level === 2 ? 'Robô Jovem' : 'Robô Mestre'
                 }`;
 
-                // Disable/Enable Action buttons during sleep
                 if (petState.isSleeping) {
                     btnFeed.disabled = true;
                     btnPlay.disabled = true;
@@ -1089,10 +1045,6 @@
                 }
             }
 
-            /* ==========================================================================
-               6. ACTION BUTTON EVENTS & INTERACTION LOGIC
-               ========================================================================== */
-            // Feed Action
             btnFeed.addEventListener('click', () => {
                 if (petState.isSleeping) return;
                 synth.playFeed();
@@ -1105,7 +1057,6 @@
                 updateHUD();
             });
 
-            // Play Action
             btnPlay.addEventListener('click', () => {
                 if (petState.isSleeping) return;
                 if (petState.energy < 15) {
@@ -1125,7 +1076,6 @@
                 updateHUD();
             });
 
-            // Pet Action
             btnPet.addEventListener('click', () => {
                 if (petState.isSleeping) return;
                 synth.playPet();
@@ -1138,7 +1088,6 @@
                 updateHUD();
             });
 
-            // Direct Petting on Mascot SVG
             robotStage.addEventListener('click', (e) => {
                 if (e.target.closest('#speech-bubble')) return;
                 if (petState.isSleeping) {
@@ -1155,7 +1104,6 @@
                 updateHUD();
             });
 
-            // Sleep Toggle Action
             btnSleep.addEventListener('click', () => {
                 petState.isSleeping = !petState.isSleeping;
                 if (petState.isSleeping) {
@@ -1169,7 +1117,6 @@
                 updateHUD();
             });
 
-            /* Floating Heart / Star Particle Emitter */
             function spawnParticles(symbol, count = 6) {
                 const layer = document.getElementById('particle-layer');
                 for (let i = 0; i < count; i++) {
@@ -1205,18 +1152,13 @@
                 }
             }
 
-            /* ==========================================================================
-               7. STATS DECAY TICKER & SLEEP RECOVERY TIMER
-               ========================================================================== */
             setInterval(() => {
                 if (petState.isSleeping) {
-                    // Sleep restores energy slowly
                     if (petState.energy < 100) {
                         petState.energy = Math.min(100, petState.energy + 4);
                         updateHUD();
                     }
                 } else {
-                    // Natural decay over time
                     petState.battery = Math.max(0, petState.battery - 0.4);
                     petState.happiness = Math.max(0, petState.happiness - 0.3);
                     petState.energy = Math.max(0, petState.energy - 0.25);
@@ -1224,9 +1166,6 @@
                 }
             }, 3500);
 
-            /* ==========================================================================
-               8. CUSTOMIZER MODAL & THEME CONTROLLER
-               ========================================================================== */
             function applyTheme(themeClass) {
                 document.body.className = document.body.className
                     .split(' ')
@@ -1236,7 +1175,6 @@
 
                 petState.currentTheme = themeClass;
 
-                // Update active button ring
                 themeBtns.forEach(btn => {
                     if (btn.dataset.theme === themeClass) {
                         btn.classList.add('border-pink-400');
@@ -1265,7 +1203,6 @@
                         else el.classList.add('hidden');
                     }
 
-                    // Update drawer button badge
                     const btn = document.querySelector(`.acc-toggle-btn[data-acc="${accId}"]`);
                     if (btn) {
                         const status = btn.querySelector('.acc-status');
@@ -1313,13 +1250,11 @@
                 });
             });
 
-            // Audio Toggle
             audioToggleBtn.addEventListener('click', () => {
                 synth.muted = !synth.muted;
                 audioIcon.textContent = synth.muted ? '🔇' : '🔊';
             });
 
-            // Reset App
             resetBtn.addEventListener('click', () => {
                 if (confirm('Deseja reiniciar todas as estatísticas do Kubo?')) {
                     petState = { ...DEFAULT_STATE };
@@ -1330,9 +1265,6 @@
                 }
             });
 
-            /* ==========================================================================
-               9. MINI-GAME LOGIC (FALLING STARS CANVAS GAME)
-               ========================================================================== */
             const minigameModal = document.getElementById('minigame-modal');
             const closeMinigameBtn = document.getElementById('close-minigame-btn');
             const startGameBtn = document.getElementById('start-game-btn');
@@ -1376,7 +1308,6 @@
                 minigameModal.classList.add('opacity-0', 'pointer-events-none');
             });
 
-            // Mouse / Touch Controls for Basket
             function handleMove(clientX) {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = clientX - rect.left;
@@ -1417,7 +1348,6 @@
                 stopGame();
                 synth.playLevelUp();
 
-                // Reward pet
                 petState.happiness = Math.min(100, petState.happiness + Math.floor(gameScore * 1.5));
                 petState.battery = Math.min(100, petState.battery + Math.floor(gameScore * 1));
                 addXP(gameScore * 2);
@@ -1440,7 +1370,7 @@
                     { symbol: '⭐', pts: 10, speed: 2.5 },
                     { symbol: '🔋', pts: 15, speed: 3.0 },
                     { symbol: '💖', pts: 8, speed: 2.0 },
-                    { symbol: '☁️', pts: -10, speed: 2.2 } // Cloud obstacle
+                    { symbol: '☁️', pts: -10, speed: 2.2 }
                 ];
                 const type = types[Math.floor(Math.random() * types.length)];
                 items.push({
@@ -1456,10 +1386,8 @@
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Spawn items
                 if (Math.random() < 0.06) spawnGameItem();
 
-                // Draw Basket
                 ctx.fillStyle = '#FF94B9';
                 ctx.beginPath();
                 ctx.roundRect(basket.x, basket.y, basket.width, basket.height, 10);
@@ -1468,21 +1396,17 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // Basket icon label
                 ctx.font = '14px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('🤖', basket.x + basket.width / 2, basket.y + 15);
 
-                // Update & Draw Items
                 for (let i = items.length - 1; i >= 0; i--) {
                     const item = items[i];
                     item.y += item.speed;
 
-                    // Draw Item Symbol
                     ctx.font = `${item.size}px sans-serif`;
                     ctx.fillText(item.symbol, item.x, item.y);
 
-                    // Collision Check
                     if (
                         item.y >= basket.y - 10 &&
                         item.y <= basket.y + basket.height &&
@@ -1499,7 +1423,6 @@
                         continue;
                     }
 
-                    // Remove out of bounds
                     if (item.y > canvas.height + 40) {
                         items.splice(i, 1);
                     }
@@ -1508,14 +1431,10 @@
                 animationFrameId = requestAnimationFrame(gameLoop);
             }
 
-            /* ==========================================================================
-               10. INITIALIZATION
-               ========================================================================== */
             applyTheme(petState.currentTheme);
             updateAccessoriesVisuals();
             updateHUD();
 
-            // Greeting message
             setTimeout(() => {
                 speak('Olá! Eu sou o Kubo. Que bom te ver aqui! ✨', '🌸');
             }, 600);
